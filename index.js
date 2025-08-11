@@ -1,17 +1,24 @@
 // task-manager-api-2/index.js
 
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); // Asegúrate de que cors está importado
 require('dotenv').config();
 
-// 1. Importar los archivos de rutas de autenticación y tareas
+// Importar los archivos de rutas de autenticación y tareas
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+// Configuración de CORS
+// El origen es la URL de tu frontend en Vercel.
+const corsOptions = {
+    origin: 'https://task-manager-frontend-2.vercel.app',
+    optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions)); // Usar la nueva configuración de CORS
 app.use(express.json());
 
 // Ruta de prueba
@@ -19,10 +26,8 @@ app.get('/', (req, res) => {
     res.send('API del gestor de tareas funcionando');
 });
 
-// 2. Usar las rutas de autenticación y tareas
-// El prefijo '/api/auth' se usa para las rutas de auth.js
+// Usar las rutas de autenticación y tareas
 app.use('/api/auth', authRoutes);
-// El prefijo '/api/tasks' se usa para las rutas de tasks.js
 app.use('/api/tasks', taskRoutes);
 
 app.listen(PORT, () => {
